@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.spring.springboot.repo.ReservationRepository;
 
+import java.util.List;
+
 @Service
 public class ReservationService {
 
@@ -13,6 +15,10 @@ public class ReservationService {
 
     public Reservation addReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
+    }
+
+    public List<Reservation> getAll() {
+        return reservationRepository.findAll();
     }
 
     public Reservation updateReservation(long id, Reservation newReservation) {

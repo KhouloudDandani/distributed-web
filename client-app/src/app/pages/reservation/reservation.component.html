@@ -1,0 +1,78 @@
+<section class="w3l-booking-top">
+    <!-- /form-16-section -->
+    <div class="booking-form-61">
+        <div class="container">
+            <div class="booking-top-gds">
+                <div class="booking-forms-16-info align-self">
+                    <h5>Your Reservation</h5>
+                    <h3 class="title-big">Select the Room, check for availability and book it.</h3>
+                    <p>Lorem ipsum dolor sit amet,Ea consequuntur illum facere aperiam sequi optio consectetur
+                        adipisicing elit Ea consequuntur illum.</p>
+                </div>
+                <div class="form-right-inf">
+                    <div class="booking-form-content">
+                        <h6>Book Now</h6>
+                        <form #form="ngForm" (ngSubmit)="form.valid && createReservation()" class="book-depature-6 signin-form">
+                            <div class="d-grid grid-col-2">
+                                <div class="hny-frm_grid">
+                                    <h5>Name</h5>
+                                    <input class="name" name="nom" [(ngModel)]="reservation.nom" type="text"
+                                        placeholder="Your Name" required>
+                                        <span *ngIf="form.submitted && form.controls['nom'].hasError('required')" class="text-danger h6">Name is required.</span>
+
+                                </div>
+                                <div class="hny-frm_grid">
+                                    <h5>Phone Number</h5>
+                                    <input class="phone" name="phonenumber" [(ngModel)]="reservation.phoneNumber" type="phone"
+                                    placeholder="Phone Number" required pattern="[0-9]*">
+                                    <span *ngIf="form.submitted && form.controls['phonenumber'].hasError('required')" class="text-danger h6">Phone Number is required.</span>
+                                    <span *ngIf="form.submitted && form.controls['phonenumber'].hasError('pattern')" class="text-danger h6">Please enter a valid phone number</span>
+                                  
+                                </div>
+                                <div class="hny-frm_grid">
+                                    <h5>Check-in Date</h5>
+                                    <input class="date" name="checkInDate" type="date" [(ngModel)]="reservation.checkInDate"
+                                    placeholder="Date" required>
+                                    <span *ngIf="form.submitted && form.controls['checkInDate'].hasError('required')" class="text-danger h6">Check-in Date is required.</span>
+                                </div>
+                                <div class="hny-frm_grid">
+                                    <h5>Check-out Date</h5>
+                                    <input class="date" name="checkOutDate" type="date" [(ngModel)]="reservation.checkOutDate"
+                                    placeholder="Date" required>
+                                    <span *ngIf="form.submitted && form.controls['checkOutDate'].hasError('required')" class="text-danger h6">Check-in Date is required.</span>
+                                </div>
+                            </div>
+                            <div class="d-grid grid-col-2 mt-3">
+                                <div class="hny-frm_grid">
+                                    <h5>Adults</h5>
+                                    <select id="adultsNumbers" [(ngModel)]="reservation.adultsNumbers"
+                                        name="adultsNumbers" required>
+                                        <option *ngFor="let num of numberOfVistors" [value]="num">{{num}}</option>
+                                    </select>
+                                    <span *ngIf="form.submitted && form.controls['adultsNumbers'].hasError('required')" class="text-danger h6">Please select the number of adults.</span>
+
+                                </div>
+                                <div class="hny-frm_grid">
+                                    <h5>Children</h5>
+                                    <select id="childrenNumbers" [(ngModel)]="reservation.childrenNumbers"
+                                        name="childrenNumbers" required>
+                                        <option *ngFor="let num of numberOfChildren" [value]="num">{{num}}</option>
+                                    </select>
+                                    <span *ngIf="form.submitted && form.controls['childrenNumbers'].hasError('required')" class="text-danger h6">Please select the number of adults.</span>
+
+                                </div>
+                            </div>
+                            <div class="d-grid mt-3">
+                                <button type="submit" class="btn btn-style btn-secondary text-center book mt-3" [disabled]="isLoading"
+                                (submit)="form.valid && createReservation()">Book Now</button>
+                            </div>
+                            
+                            <p class="already">You are booking as guest.</p>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

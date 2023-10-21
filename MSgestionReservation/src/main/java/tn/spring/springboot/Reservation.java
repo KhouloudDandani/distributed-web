@@ -21,4 +21,9 @@ public class Reservation {
 	long id;
 	String nom;
 	Date dateReservation;
+	Date checkInDate;
+	Date checkOutDate;
+	int adultsNumbers;
+	int childrenNumbers;
+	String phoneNumber;
 }

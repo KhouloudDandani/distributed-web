@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class ReservationRestAPI {
     private String title="Hello, i'm the candidate Micro Service";
@@ -19,24 +21,29 @@ public class ReservationRestAPI {
     @Autowired
     private ReservationService reservationService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<Reservation>> getReservations() {
+        return new ResponseEntity<>(reservationService.getAll(), HttpStatus.OK);
+    }
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Reservation> createCandidat(@RequestBody Reservation candidat) {
-        return new ResponseEntity<>(reservationService.addReservation(candidat), HttpStatus.OK);
+    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
+        return new ResponseEntity<>(reservationService.addReservation(reservation), HttpStatus.OK);
     }
 
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Reservation> updateCandidat(@PathVariable(value = "id") int id,
-                                                   @RequestBody Reservation candidat){
-        return new ResponseEntity<>(reservationService.updateReservation(id, candidat), HttpStatus.OK);
+    public ResponseEntity<Reservation> updateReservation(@PathVariable(value = "id") int id,
+                                                   @RequestBody Reservation reservation){
+        return new ResponseEntity<>(reservationService.updateReservation(id, reservation), HttpStatus.OK);
     }
 
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> deleteCandidat(@PathVariable(value = "id") int id){
+    public ResponseEntity<String> deleteReservation(@PathVariable(value = "id") int id){
         return new ResponseEntity<>(reservationService.deleteReservation(id), HttpStatus.OK);
     }
 
