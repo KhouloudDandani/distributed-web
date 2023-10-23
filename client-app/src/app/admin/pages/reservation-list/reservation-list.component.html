@@ -1,0 +1,43 @@
+<div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title"> Table of reservation</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class=" text-primary">
+                <th>
+                  Name
+                </th>
+                <th>
+                  Date of resevation
+                </th>
+                <th>
+                    checkInDate
+                </th>
+                <th class="text-right">
+                    checkOutDate
+                </th>
+                <th class="text-right">
+                    phoneNumber
+                </th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let reservation of list">
+                  <td>{{ reservation.nom }}</td>
+                  <td>{{ reservation.dateReservation  | date:'short' }}</td>
+                  <td>{{ reservation.checkInDate | date:'short' }}</td>
+                  <td class="text-right">{{ reservation.checkOutDate  | date :'short' }}</td>
+                  <td class="text-right">{{ reservation.phoneNumber }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+  

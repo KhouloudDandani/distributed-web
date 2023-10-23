@@ -30,6 +30,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/scss/paper-dashboard.scss",
               "src/styles.scss"
             ],
             "scripts": [
