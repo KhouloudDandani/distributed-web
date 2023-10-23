@@ -30,8 +30,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/scss/paper-dashboard.scss",
-              "src/styles.scss"
+              "src/styles.scss",    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+
+
             ],
             "scripts": [
               "src/assets/js/jquery-3.3.1.min.js",
@@ -113,5 +114,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "b2187c9a-c005-4130-8d9a-75cc2d6c150f"
   }
 }
