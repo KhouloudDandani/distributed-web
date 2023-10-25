@@ -1,0 +1,159 @@
+version: "3.9"
+services:
+  
+    
+  reservation:
+    container_name: reservation
+    image: "reservation-img"
+    build: ./MSgestionReservation
+    ports:
+      - "8080:8080"   
+    environment:
+      - eureka.client.service-url.defaultZone=http://serviceregistry:8001/eureka/
+      - spring.datasource.url=jdbc:mysql://reservationdb:3306/basics?allowPublicKeyRetrieval=true
+      - spring.datasource.username=root
+      - spring.datasource.password=root
+    depends_on:
+      - "Eureka"
+      - reservationdb
+    restart: on-failure
+    volumes:
+      - depot:/root/.m2
+
+
+  forum:
+    container_name: forum
+    image: "forum-img"
+    build: ./forumManagement
+    ports:
+      - "8086:8086"
+    restart: on-failure
+    environment:
+      - eureka.client.service-url.defaultZone=http://serviceregistry:8001/eureka/
+      - spring.datasource.url=jdbc:mysql://db-forum:3306/forum?allowPublicKeyRetrieval=true
+      - spring.datasource.username=root
+      - spring.datasource.password=root
+    depends_on:
+      - "Eureka"
+      - db-forum
+    volumes:
+      - depotforum:/root/.m2
+
+  reclamation:
+    container_name: reclamation
+    image: "reclamation-img"
+    build: ./Reclamation_MS
+    ports:
+      - "8082:8082"   
+    environment:
+      - eureka.client.service-url.defaultZone=http://serviceregistry:8001/eureka/
+    depends_on:
+      - "Eureka"
+ 
+  Eureka:
+    container_name: eureka
+    build: .\Eureka Server
+    hostname: serviceregistry
+    ports:
+      - "8001:8001"   
+    image: "eureka"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://serviceregistry:8001/eureka/
+
+  api-gateway:
+    build:
+      context: ./gateway
+    container_name: api-gateway-container
+    image: api-gateway-image
+    restart: on-failure
+    depends_on:
+      - Eureka
+      - reclamation
+      - forum
+      - reservation
+    ports:
+      - 8090:8090
+    environment:
+      - eureka.client.service-url.defaultZone=http://serviceregistry:8001/eureka
+      - eureka.client.register-with-eureka=true
+      - spring.cloud.gateway.discovery.locator.enabled=true
+      - spring.cloud.gateway.discovery.locator.lower-case-service-id=true
+
+      - spring.cloud.gateway.routes[0].id=reservation-service
+      - spring.cloud.gateway.routes[0].uri=http://reservation:8080/
+      - spring.cloud.gateway.routes[0].predicates[0]=Path=/reservations/**
+
+      - spring.cloud.gateway.routes[1].id=reclamation-service
+      - spring.cloud.gateway.routes[1].uri=http://reclamation:8082/
+      - spring.cloud.gateway.routes[1].predicates[0]=Path=/Reclamation/**
+
+      - spring.cloud.gateway.routes[2].id=forum-service
+      - spring.cloud.gateway.routes[2].uri=http://forum:8086/
+      - spring.cloud.gateway.routes[2].predicates[0]=Path=/forums/**
+
+      - spring.cloud.gateway.routes[3].id=auth-service
+      - spring.cloud.gateway.routes[3].uri=http://keycloak:8000/
+      - spring.cloud.gateway.routes[3].predicates[0]=Path=/auth/**
+    volumes:
+      - depotgateway:/root/.m2
+
+
+  keycloak-mysql:
+    container_name: keycloak-mysql
+    image: mysql:5.7
+    volumes:
+      - ./mysql_keycloak_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:18.0.0
+    command: [ "start-dev", "--import-realm" ]
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8000:8080"
+    volumes:
+      - ./realms/:/opt/keycloak/data/import/
+    depends_on:
+      - keycloak-mysql
+
+
+  reservationdb:
+      image: mysql:8.0.33
+      container_name: mysql-reservation  
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=basics
+      ports:
+        - "3307:3306"
+      restart: unless-stopped  
+      volumes:
+        - ./reservationdb_data:/var/lib/mysql
+  
+  db-forum:
+      image: mysql:8.0.33
+      container_name: db-forum  
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=forum
+      ports:
+        - "3308:3306"
+      restart: unless-stopped  
+      volumes:
+        - ./forumdb_data:/var/lib/mysql
+
+volumes:
+  depot:
+  depotforum:
+  depotgateway:
